@@ -36,7 +36,7 @@ export class GameScene extends BaseGameScene {
 
     this.scene.launch("GameUIScene");
     this.tickSound = this.sound.add("tick");
-    this.lineBreakSound = this.sound.add("lineBreak", { volume: 0.20 });
+    this.lineBreakSound = this.sound.add("lineBreak", { volume: 0.2 });
 
     this.startX = (this.width - this.tileSize) / 2;
     this.startY = -this.tileSize;
@@ -45,7 +45,7 @@ export class GameScene extends BaseGameScene {
 
     this.addControls();
     this.currentBlock = this.generateBlock();
-    // TODO: Add background music
+
     // TODO: Add button for muting backround music and sound effects
   }
 

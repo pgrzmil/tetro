@@ -14,6 +14,7 @@ Icons made by:
 Sounds made by:
 * NenadSimic from https://opengameart.org/ licensed on CC-BY 3.0.
 * Tim Mortimer from https://opengameart.org/ licensed on CC-BY 3.0.
+* FoxSynergy from https://opengameart.org/ licensed on CC-BY 3.0.
 
 Thanks guys for free assets!
 

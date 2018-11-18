@@ -11,9 +11,13 @@ export class LoadScene extends Scene {
     this.load.audio("tick", "../../assets/tickSound.wav");
     this.load.audio("click", "../../assets/click.wav");
     this.load.audio("lineBreak", "../../assets/lineBreak.wav");
+    this.load.audio("background", "../../assets/background.mp3");
   }
 
   public create() {
+    const backgroundSound = this.sound.add("background", { volume: 0.1, loop: true });
+    backgroundSound.play();
+
     this.scene.start("MenuScene");
   }
 }
