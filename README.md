@@ -16,5 +16,5 @@ Thanks guys for free assets!
 Tetris ® & © 1985~2018 is trademark of Tetris Holding. All rights reserved, trademarks, copyrights and all the other fancy stuff to those guys.
 
 # License
-This project is licensed under the MIT License - see the [LICENSE] file for details
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
 
