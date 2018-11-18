@@ -1,4 +1,4 @@
-import { GameScene, LoadScene, MenuScene, GameUIScene, GameOverScene } from "./scenes";
+import { GameScene, LoadScene, MenuScene, GameUIScene } from "./scenes";
 
 class Game extends Phaser.Game {
   private static instance: Game;
@@ -15,7 +15,7 @@ class Game extends Phaser.Game {
         default: "arcade",
       },
       pixelArt: false,
-      scene: [LoadScene, MenuScene, GameScene, GameUIScene, GameOverScene],
+      scene: [LoadScene, MenuScene, GameScene, GameUIScene],
       type: 0,
       width: 480,
       zoom: 1,
