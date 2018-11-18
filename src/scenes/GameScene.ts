@@ -1,4 +1,4 @@
-import { Input, GameObjects, Time } from "phaser";
+import { Input, GameObjects, Sound } from "phaser";
 import { BaseGameScene } from "./BaseGameScene";
 import GameData from "../GameData";
 import { Block } from "../blocks/Block";
@@ -7,6 +7,9 @@ import { IBlock, JBlock, LBlock, SBlock, ZBlock, TBlock } from "../blocks";
 export class GameScene extends BaseGameScene {
 
   private cursors: Input.Keyboard.CursorKeys;
+  private tickSound: Sound.BaseSound;
+  private lineBreakSound: Sound.BaseSound;
+
   private currentBlock: Block;
   private laidTiles: GameObjects.Sprite[];
 
@@ -21,7 +24,7 @@ export class GameScene extends BaseGameScene {
 
   private descendInterval = 750;
   private quickDescendInterval = 25;
-  private rotationInterval = 125;
+  private rotationInterval = 150;
   private slideInterval = 50;
 
   constructor() {
@@ -32,7 +35,8 @@ export class GameScene extends BaseGameScene {
     super.create();
 
     this.scene.launch("GameUIScene");
-    this.sound.add("tick");
+    this.tickSound = this.sound.add("tick");
+    this.lineBreakSound = this.sound.add("lineBreak", { volume: 0.20 });
 
     this.startX = (this.width - this.tileSize) / 2;
     this.startY = -this.tileSize;
@@ -103,11 +107,18 @@ export class GameScene extends BaseGameScene {
     if (this.willCollide(0, this.tileSize) || (this.currentBlock.y + this.tileSize) >= this.height) {
       this.laidTiles.push(...this.currentBlock.tiles);
       GameData.gamePoints += this.currentBlock.pointValue;
-      this.sound.play("tick");
-      this.checkFullLines();
+
+      const removedLinesCount = this.checkFullLines();
+      if (removedLinesCount > 0) {
+        this.lineBreakSound.play();
+        // TODO: Add bonus for number of lines
+        GameData.gamePoints += removedLinesCount * 100;
+      } else {
+        this.tickSound.play();
+      }
 
       if (this.laidTiles.some(tile => tile.y === 0)) {
-        this.scene.start("GameOverScene");
+        this.scene.start("MenuScene", { showPoints: true });
         // TODO: Add highscore
       }
       this.currentBlock = this.generateBlock();
@@ -116,7 +127,7 @@ export class GameScene extends BaseGameScene {
     }
   }
 
-  private checkFullLines() {
+  private checkFullLines(): number {
     const tilesPerLine = this.width / this.tileSize;
     const ys = this.laidTiles.map(tile => tile.y).filter((y, index, array) => y && array.indexOf(y) === index).sort((y1, y2) => y1 - y2);
 
@@ -125,8 +136,6 @@ export class GameScene extends BaseGameScene {
       const line = this.laidTiles.filter(tile => tile.y === y);
       if (line.length === tilesPerLine) {
         line.forEach(tile => tile.destroy());
-        // TODO: Add animation on line break
-        // TODO: Add sound on line break
         // remove line
         this.laidTiles = this.laidTiles.filter(tile => line.indexOf(tile) === -1);
         // move rest of blocks down
@@ -135,8 +144,7 @@ export class GameScene extends BaseGameScene {
       }
     });
 
-    // TODO: Add bonus for number of lines
-    GameData.gamePoints += removedLines * 100;
+    return removedLines;
   }
 
   private willCollide(deltaX: number = 0, deltaY: number = 0): boolean {

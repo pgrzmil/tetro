@@ -2,7 +2,7 @@ import { BaseGameScene } from "./BaseGameScene";
 
 export class MenuScene extends BaseGameScene {
 
-  protected textStyle = { color: this.textColor, align: "center", fontSize: 28 };
+  private textStyle = { color: this.textColor, align: "center", fontSize: 24 };
 
   constructor() {
     super({ key: "MenuScene" });
@@ -15,13 +15,14 @@ export class MenuScene extends BaseGameScene {
 
     const playButton = this.add.image(this.width / 2 + 32, this.height / 2, "playIcon");
     playButton.setInteractive();
-    playButton.on("pointerdown", this.playClick, this);
+    playButton.on("pointerdown", this.startGame, this);
 
-    this.input.keyboard.on("keydown_SPACE", this.playClick, this);
-    this.input.keyboard.on("keydown_ENTER", this.playClick, this);
+    this.input.keyboard.on("keydown_SPACE", this.startGame, this);
+    this.input.keyboard.on("keydown_ENTER", this.startGame, this);
   }
 
-  private playClick() {
+  private startGame() {
+    this.sound.play("click", { volume: 0.1 });
     this.scene.start("GameScene");
   }
 }
