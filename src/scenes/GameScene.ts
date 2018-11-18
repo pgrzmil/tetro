@@ -8,14 +8,21 @@ export class GameScene extends BaseGameScene {
 
   private cursors: Input.Keyboard.CursorKeys;
   private currentBlock: Block;
-  private descendTimer: Time.TimerEvent;
   private laidTiles: GameObjects.Sprite[];
-  private lastUpdate: number = 0;
 
   private startX = 0;
   private startY = 0;
   private tileSize = 32;
-  private updateTime = 800;
+
+  private lastRotation: number = 0;
+  private lastSlide: number = 0;
+  private lastDescend: number = 0;
+  private lastQuickDescend: number = 0;
+
+  private descendInterval = 750;
+  private quickDescendInterval = 25;
+  private rotationInterval = 125;
+  private slideInterval = 50;
 
   constructor() {
     super({ key: "GameScene" });
@@ -24,34 +31,42 @@ export class GameScene extends BaseGameScene {
   public create() {
     super.create();
 
-    this.sound.add("tick");
-    this.startX = (this.width - this.tileSize) / 2;
-    GameData.gamePoints = 0;
     this.scene.launch("GameUIScene");
+    this.sound.add("tick");
+
+    this.startX = (this.width - this.tileSize) / 2;
+    this.startY = -this.tileSize;
+    this.laidTiles = [];
+    GameData.gamePoints = 0;
 
     this.addControls();
-
-    this.laidTiles = [];
     this.currentBlock = this.generateBlock();
-    this.descendTimer = this.time.addEvent({ delay: this.updateTime, loop: true, callback: this.descendBlock, callbackScope: this });
-
     // TODO: Add background music
     // TODO: Add button for muting backround music and sound effects
   }
 
   public update(time: number, delta: number) {
-    if (this.lastUpdate + 40 < time) {
-      this.lastUpdate = time;
+    if (time - this.lastDescend >= this.descendInterval) {
+      this.lastDescend = time;
+      this.descendBlock();
+    }
+
+    if (this.cursors.space.isDown && time - this.lastRotation >= this.rotationInterval) {
+      this.lastRotation = time;
+      this.rotateBlockClockwise();
+    }
+
+    if (this.cursors.down.isDown && time - this.lastQuickDescend >= this.quickDescendInterval) {
+      this.lastQuickDescend = time;
+      this.descendBlock();
+    }
+
+    if (time - this.lastSlide >= this.slideInterval) {
+      this.lastSlide = time;
       if (this.cursors.right.isDown) {
         this.slideBlock(this.tileSize);
       } else if (this.cursors.left.isDown) {
         this.slideBlock(-this.tileSize);
-      }
-
-      if (this.cursors.down.isDown) {
-        this.descendTimer.paused = true;
-        this.descendBlock();
-        this.descendTimer.paused = false;
       }
     }
   }
@@ -86,21 +101,16 @@ export class GameScene extends BaseGameScene {
 
   private descendBlock() {
     if (this.willCollide(0, this.tileSize) || (this.currentBlock.y + this.tileSize) >= this.height) {
-      this.descendTimer.remove(null);
       this.laidTiles.push(...this.currentBlock.tiles);
-      // TODO: add sound on laying block
       GameData.gamePoints += this.currentBlock.pointValue;
       this.sound.play("tick");
       this.checkFullLines();
 
-      const isTop = this.laidTiles.some(tiles => tiles.y < this.tileSize);
-      if (isTop) {
+      if (this.laidTiles.some(tile => tile.y === 0)) {
         this.scene.start("GameOverScene");
         // TODO: Add highscore
-      } else {
-        this.descendTimer = this.time.addEvent({ delay: this.updateTime, loop: true, callback: this.descendBlock, callbackScope: this });
-        this.currentBlock = this.generateBlock();
       }
+      this.currentBlock = this.generateBlock();
     } else {
       this.currentBlock.descend(this.tileSize);
     }
@@ -137,6 +147,6 @@ export class GameScene extends BaseGameScene {
 
   private addControls() {
     this.cursors = this.input.keyboard.createCursorKeys();
-    this.input.keyboard.on("keydown_SPACE", this.rotateBlockClockwise, this);
+    // TODO: addd pausing game using ESC key
   }
 }
