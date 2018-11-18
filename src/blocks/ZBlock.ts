@@ -3,7 +3,7 @@ import { Block } from "./Block";
 
 export class ZBlock extends Block {
 
-    public rotate() {
+    public rotateClockwise() {
         if (this.position) {
             this.tiles[0].x = this.tiles[2].x - this.tileSize;
             this.tiles[0].y = this.tiles[2].y + this.tileSize;

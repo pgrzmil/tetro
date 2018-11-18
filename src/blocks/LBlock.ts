@@ -3,7 +3,7 @@ import { Block } from "./Block";
 
 export class LBlock extends Block {
 
-    public rotate() {
+    public rotateClockwise() {
         switch (this.position) {
             case 0:
                 this.tiles[0].x = this.tiles[2].x - this.tileSize;
@@ -42,6 +42,11 @@ export class LBlock extends Block {
                 this.position = 0;
                 break;
         }
+    }
+
+    public rotateCounterClockwise() {
+        this.position = this.previousPosition - 1 < 0 ? 0 : this.previousPosition - 1;
+        super.rotateCounterClockwise();
     }
 
     protected createBlock(scene: Scene, originX: number, originY: number) {

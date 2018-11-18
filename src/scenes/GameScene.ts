@@ -55,13 +55,16 @@ export class GameScene extends BaseGameScene {
     }
   }
 
-  private rotateBlock() {
-    // TODO: add rotation blocking when there are other tiles nearbyc
-    this.currentBlock.rotate();
-    if (this.currentBlock.x < 0) {
-      this.currentBlock.slide(-this.currentBlock.x);
-    } else if (this.currentBlock.maxx >= this.width) {
-      this.currentBlock.slide(-(this.currentBlock.maxx - this.width + this.tileSize));
+  private rotateBlockClockwise() {
+    this.currentBlock.rotateClockwise();
+    if (this.willCollide()) {
+      this.currentBlock.rotateCounterClockwise();
+    } else {
+      if (this.currentBlock.x < 0) {
+        this.currentBlock.slide(-this.currentBlock.x);
+      } else if (this.currentBlock.maxx >= this.width) {
+        this.currentBlock.slide(-(this.currentBlock.maxx - this.width + this.tileSize));
+      }
     }
   }
 
@@ -75,7 +78,7 @@ export class GameScene extends BaseGameScene {
   }
 
   private slideBlock(deltaX: number) {
-    if (!this.willCollide(deltaX, 0) && this.currentBlock.maxx + deltaX < this.width && this.currentBlock.x + deltaX >= 0) {
+    if (!this.willCollide(deltaX) && this.currentBlock.maxx + deltaX < this.width && this.currentBlock.x + deltaX >= 0) {
       this.currentBlock.slide(deltaX);
     }
   }
@@ -111,9 +114,9 @@ export class GameScene extends BaseGameScene {
       const line = this.laidTiles.filter(tile => tile.y === y);
       if (line.length === tilesPerLine) {
         line.forEach(tile => tile.destroy());
-        // remove line
         // TODO: Add animation on line break
         // TODO: Add sound on line break
+        // remove line
         this.laidTiles = this.laidTiles.filter(tile => line.indexOf(tile) === -1);
         // move rest of blocks down
         this.laidTiles.filter(tile => tile.y < y).forEach(tile => tile.y += this.tileSize);
@@ -125,7 +128,7 @@ export class GameScene extends BaseGameScene {
     GameData.gamePoints += removedLines * 100;
   }
 
-  private willCollide(deltaX: number, deltaY: number): boolean {
+  private willCollide(deltaX: number = 0, deltaY: number = 0): boolean {
     return this.currentBlock.tiles.some(tile => {
       return this.laidTiles.some(block => block.x === tile.x + deltaX && block.y === tile.y + deltaY);
     });
@@ -133,6 +136,6 @@ export class GameScene extends BaseGameScene {
 
   private addControls() {
     this.cursors = this.input.keyboard.createCursorKeys();
-    this.input.keyboard.on("keydown_SPACE", this.rotateBlock, this);
+    this.input.keyboard.on("keydown_SPACE", this.rotateBlockClockwise, this);
   }
 }

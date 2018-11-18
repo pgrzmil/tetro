@@ -3,7 +3,7 @@ import { Block } from "./Block";
 
 export class IBlock extends Block {
 
-    public rotate() {
+    public rotateClockwise() {
         if (this.position) {
             this.tiles[0].x = this.tiles[2].x - (2 * this.tileSize);
             this.tiles[0].y = this.tiles[2].y;

@@ -19,7 +19,16 @@ export class Block {
     }
     public tiles: GameObjects.Sprite[];
 
-    protected position = 0;
+    protected previousPosition = 0;
+    protected _position = 0;
+    get position() {
+        return this._position;
+    }
+    set position(val) {
+        this.previousPosition = this._position;
+        this._position = val;
+    }
+
     protected tileSize = 0;
     private tilePointValue = 5;
 
@@ -36,7 +45,12 @@ export class Block {
         this.tiles.forEach(tile => tile.y += deltaY);
     }
 
-    public rotate() {
+    // TODO: refactor rotation logic
+    public rotateClockwise() {
+    }
+
+    public rotateCounterClockwise() {
+        this.rotateClockwise();
     }
 
     protected createBlock(scene: Scene, originX: number, originY: number) {
