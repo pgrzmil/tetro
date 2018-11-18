@@ -24,6 +24,7 @@ export class GameScene extends BaseGameScene {
   public create() {
     super.create();
 
+    this.sound.add("tick");
     this.startX = (this.width - this.tileSize) / 2;
     GameData.gamePoints = 0;
     this.scene.launch("GameUIScene");
@@ -89,7 +90,7 @@ export class GameScene extends BaseGameScene {
       this.laidTiles.push(...this.currentBlock.tiles);
       // TODO: add sound on laying block
       GameData.gamePoints += this.currentBlock.pointValue;
-
+      this.sound.play("tick");
       this.checkFullLines();
 
       const isTop = this.laidTiles.some(tiles => tiles.y < this.tileSize);

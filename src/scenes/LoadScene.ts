@@ -8,6 +8,7 @@ export class LoadScene extends Scene {
   public preload() {
     this.load.image("playIcon", "../../assets/play-64.png");
     this.load.image("block", "../../assets/block-32.png");
+    this.load.audio("tick", "../../assets/tickSound.wav");
   }
 
   public create() {

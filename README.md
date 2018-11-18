@@ -9,7 +9,10 @@ Tiles made by:
 * GameArtForge from https://opengameart.org/ licensed on CC-BY 3.0,
 
 Icons made by: 
-* Appzgear from https://www.flaticon.com/ licensed on CC-BY 3.0.
+* Appzgear from https://www.flaticon.com/ licensed on CC-BY 3.0,
+
+Sounds made by:
+* NenadSimic from https://opengameart.org/ licensed on CC-BY 3.0.
 
 Thanks guys for free assets!
 
