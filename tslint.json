@@ -8,6 +8,7 @@
         "no-empty": false,
         "ordered-imports": false,
         "arrow-parens": false,
+        "variable-name": false,
         "max-line-length": [
             true,
             250

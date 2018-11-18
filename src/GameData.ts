@@ -9,7 +9,7 @@ class GameData {
         return this.instance || (this.instance = new this());
     }
 
-    // tslint:disable:variable-name member-ordering
+    // tslint:disable: member-ordering
     private _gamePoints: number = 0;
     get gamePoints() {
         return this._gamePoints;
