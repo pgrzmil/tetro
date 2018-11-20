@@ -6,19 +6,19 @@ export class SBlock extends Block {
     public rotateClockwise() {
         if (this.position) {
             this.tiles[0].x = this.tiles[2].x - this.tileSize;
-            this.tiles[0].y = this.tiles[2].y - this.tileSize;
-            this.tiles[1].x = this.tiles[2].x - this.tileSize;
-            this.tiles[1].y = this.tiles[2].y;
-            this.tiles[3].x = this.tiles[2].x;
-            this.tiles[3].y = this.tiles[2].y + this.tileSize;
-            this.position = 0;
-        } else {
-            this.tiles[0].x = this.tiles[2].x - this.tileSize;
             this.tiles[0].y = this.tiles[2].y + this.tileSize;
             this.tiles[1].x = this.tiles[2].x;
             this.tiles[1].y = this.tiles[2].y + this.tileSize;
             this.tiles[3].x = this.tiles[2].x + this.tileSize;
             this.tiles[3].y = this.tiles[2].y;
+            this.position = 0;
+        } else {
+            this.tiles[0].x = this.tiles[2].x - this.tileSize;
+            this.tiles[0].y = this.tiles[2].y - this.tileSize;
+            this.tiles[1].x = this.tiles[2].x - this.tileSize;
+            this.tiles[1].y = this.tiles[2].y;
+            this.tiles[3].x = this.tiles[2].x;
+            this.tiles[3].y = this.tiles[2].y + this.tileSize;
             this.position = 1;
         }
     }
