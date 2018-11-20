@@ -28,6 +28,8 @@ export class GameScene extends BaseGameScene {
   private rotationInterval = 150;
   private slideInterval = 50;
 
+  private blockQuickDescend = false;
+
   constructor() {
     super({ key: "GameScene" });
   }
@@ -40,7 +42,6 @@ export class GameScene extends BaseGameScene {
     this.lineBreakSound = this.sound.add("lineBreak", { volume: 0.2 });
 
     this.startX = (this.width - this.tileSize) / 2;
-    this.startY = -this.tileSize;
     this.laidTiles = [];
     GameData.gamePoints = 0;
 
@@ -51,6 +52,11 @@ export class GameScene extends BaseGameScene {
   }
 
   public update(time: number, delta: number) {
+    if (this.lastDescend === 0) {
+      this.lastDescend = time;
+      return;
+    }
+
     if (time - this.lastDescend >= this.descendInterval) {
       this.lastDescend = time;
       this.descendBlock();
@@ -61,7 +67,7 @@ export class GameScene extends BaseGameScene {
       this.rotateBlockClockwise();
     }
 
-    if (this.cursors.down.isDown && time - this.lastQuickDescend >= this.quickDescendInterval) {
+    if (this.cursors.down.isDown && !this.blockQuickDescend && time - this.lastQuickDescend >= this.quickDescendInterval) {
       this.lastQuickDescend = time;
       this.descendBlock();
     }
@@ -78,7 +84,7 @@ export class GameScene extends BaseGameScene {
 
   private rotateBlockClockwise() {
     this.currentBlock.rotateClockwise();
-    if (this.willCollide()) {
+    if (this.willCollide() || this.currentBlock.y + this.tileSize >= this.height) {
       this.currentBlock.rotateCounterClockwise();
     } else {
       if (this.currentBlock.x < 0) {
@@ -123,9 +129,11 @@ export class GameScene extends BaseGameScene {
         this.scene.start("MenuScene", { showPoints: true });
         // TODO: Add highscore
       }
+      this.blockQuickDescend = false;
       this.currentBlock = this.generateBlock();
     } else {
       this.currentBlock.descend(this.tileSize);
+      this.blockQuickDescend = (this.willCollide(0, this.tileSize) || (this.currentBlock.y + this.tileSize) >= this.height);
     }
   }
 
