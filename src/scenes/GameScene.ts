@@ -15,7 +15,8 @@ export class GameScene extends BaseGameScene {
 
   private startX = 0;
   private startY = 0;
-  private tileSize = 32;
+  private readonly tileSize = 32;
+  private readonly pointsPerLine = 100;
 
   private lastRotation: number = 0;
   private lastSlide: number = 0;
@@ -111,8 +112,9 @@ export class GameScene extends BaseGameScene {
       const removedLinesCount = this.checkFullLines();
       if (removedLinesCount > 0) {
         this.lineBreakSound.play();
-        // TODO: Add bonus for number of lines
-        GameData.gamePoints += removedLinesCount * 100;
+
+        const multiplier = [0, 1, 1.5, 2, 2.5]
+        GameData.gamePoints += this.pointsPerLine * removedLinesCount * multiplier[removedLinesCount];
       } else {
         this.tickSound.play();
       }
