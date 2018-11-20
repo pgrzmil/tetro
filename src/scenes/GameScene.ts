@@ -99,8 +99,10 @@ export class GameScene extends BaseGameScene {
   private blockTypes = [JBlock, LBlock, SBlock, ZBlock, TBlock, IBlock, Block];
   private generateBlock(): Block {
     // TODO: Add preview of next block that will appear
-    const BlockType = this.blockTypes[Math.floor(Math.random() * this.blockTypes.length)];
-    const block = new BlockType(this, this.startX, this.startY, this.tileSize);
+    const blockType = this.blockTypes[Math.floor(Math.random() * this.blockTypes.length)];
+    const block = new blockType(this, this.startX, this.startY, this.tileSize);
+    block.rotateRandomly();
+    block.setOrigin(this.startX, this.startY);
     return block;
   }
 

@@ -2,6 +2,7 @@ import { Scene } from "phaser";
 import { Block } from "./Block";
 
 export class TBlock extends Block {
+    protected numberOfStates = 4;
 
     public rotateClockwise() {
         switch (this.position) {

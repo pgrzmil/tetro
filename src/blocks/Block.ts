@@ -19,6 +19,8 @@ export class Block {
     }
     public tiles: GameObjects.Sprite[];
 
+    protected numberOfStates = 2;
+
     protected previousPosition = 0;
     protected _position = 0;
     get position() {
@@ -51,6 +53,20 @@ export class Block {
 
     public rotateCounterClockwise() {
         this.rotateClockwise();
+    }
+
+    public rotateRandomly() {
+        this.position = Math.floor(Math.random() * this.numberOfStates);
+        this.rotateClockwise();
+    }
+
+    public setOrigin(originX: number, originY: number) {
+        const deltaX = originX - Math.min(...this.tiles.map(tile => tile.x));
+        const deltaY = originY - Math.min(...this.tiles.map(tile => tile.y));
+        this.tiles.forEach(tile => {
+            tile.x += deltaX;
+            tile.y += deltaY;
+        });
     }
 
     protected createBlock(scene: Scene, originX: number, originY: number) {
