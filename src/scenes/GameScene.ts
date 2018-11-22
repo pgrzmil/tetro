@@ -2,7 +2,7 @@ import { Input, GameObjects, Sound } from "phaser";
 import { BaseGameScene } from "./BaseGameScene";
 import GameData from "../GameData";
 import { Block } from "../blocks/Block";
-import { IBlock, JBlock, LBlock, SBlock, ZBlock, TBlock } from "../blocks";
+import { IBlock, JBlock, LBlock, SBlock, ZBlock, TBlock, OBlock } from "../blocks";
 
 export class GameScene extends BaseGameScene {
 
@@ -16,6 +16,7 @@ export class GameScene extends BaseGameScene {
   private startX = 0;
   private startY = 0;
   private readonly tileSize = 32;
+  private readonly pointsPerBlock = 4;
   private readonly pointsPerLine = 100;
 
   private lastRotation: number = 0;
@@ -96,14 +97,11 @@ export class GameScene extends BaseGameScene {
   }
 
   // tslint:disable-next-line:member-ordering
-  private blockTypes = [JBlock, LBlock, SBlock, ZBlock, TBlock, IBlock, Block];
+  private blockTypes = [JBlock, LBlock, SBlock, ZBlock, TBlock, IBlock, OBlock];
   private generateBlock(): Block {
     // TODO: Add preview of next block that will appear
     const blockType = this.blockTypes[Math.floor(Math.random() * this.blockTypes.length)];
-    const block = new blockType(this, this.startX, this.startY, this.tileSize);
-    block.rotateRandomly();
-    block.setOrigin(this.startX, this.startY);
-    return block;
+    return new blockType(this, this.startX, this.startY, this.tileSize);
   }
 
   private slideBlock(deltaX: number) {
@@ -115,13 +113,13 @@ export class GameScene extends BaseGameScene {
   private descendBlock() {
     if (this.willCollide(0, this.tileSize) || (this.currentBlock.y + this.tileSize) >= this.height) {
       this.laidTiles.push(...this.currentBlock.tiles);
-      GameData.gamePoints += this.currentBlock.pointValue;
+      GameData.gamePoints += this.pointsPerBlock;
 
       const removedLinesCount = this.checkFullLines();
       if (removedLinesCount > 0) {
         this.lineBreakSound.play();
 
-        const multiplier = [0, 1, 1.5, 2, 2.5]
+        const multiplier = [0, 1, 1.5, 2, 2.5];
         GameData.gamePoints += this.pointsPerLine * removedLinesCount * multiplier[removedLinesCount];
       } else {
         this.tickSound.play();

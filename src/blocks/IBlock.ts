@@ -1,34 +1,25 @@
-import { Scene } from "phaser";
 import { Block } from "./Block";
+import { PositionMatrixItem } from "./PositionMatrixItem";
 
 export class IBlock extends Block {
 
-    public rotateClockwise() {
-        if (this.position) {
-            this.tiles[0].x = this.tiles[2].x - (2 * this.tileSize);
-            this.tiles[0].y = this.tiles[2].y;
-            this.tiles[1].x = this.tiles[2].x - this.tileSize;
-            this.tiles[1].y = this.tiles[2].y;
-            this.tiles[3].x = this.tiles[2].x + this.tileSize;
-            this.tiles[3].y = this.tiles[2].y;
-            this.position = 0;
-        } else {
-            this.tiles[0].x = this.tiles[2].x;
-            this.tiles[0].y = this.tiles[2].y - (2 * this.tileSize);
-            this.tiles[1].x = this.tiles[2].x;
-            this.tiles[1].y = this.tiles[2].y - this.tileSize;
-            this.tiles[3].x = this.tiles[2].x;
-            this.tiles[3].y = this.tiles[2].y + this.tileSize;
-            this.position = 1;
-        }
-    }
+    protected positonMatrix: PositionMatrixItem[][] = [
+        [
+            new PositionMatrixItem(-2 * this.tileSize, 0),
+            new PositionMatrixItem(-1 * this.tileSize, 0),
+            new PositionMatrixItem(0, 0),
+            new PositionMatrixItem(this.tileSize, 0),
+        ],
+        [
+            new PositionMatrixItem(0, -2 * this.tileSize),
+            new PositionMatrixItem(0, -1 * this.tileSize),
+            new PositionMatrixItem(0, 0),
+            new PositionMatrixItem(0, this.tileSize),
+        ],
+    ];
 
-    protected createBlock(scene: Scene, originX: number, originY: number) {
-        this.tiles = [
-            this.createTile(scene, originX, originY),
-            this.createTile(scene, originX + (1 * this.tileSize), originY),
-            this.createTile(scene, originX + (2 * this.tileSize), originY),
-            this.createTile(scene, originX + (3 * this.tileSize), originY),
-        ];
+    constructor(scene: Phaser.Scene, originX: number, originY: number, tileSize: number) {
+        super(scene, originX, originY, tileSize);
+        this.createBlock(scene, originX, originY);
     }
 }
