@@ -45,8 +45,9 @@ export abstract class Block {
         return Math.max(...this.tiles.map(tile => tile.y));
     }
 
-    constructor(scene: Scene, originX: number, originY: number, tileSize: number) {
+    constructor(scene: Scene, tileSize: number) {
         this.tileSize = tileSize;
+        this._tiles = [this.createTile(scene), this.createTile(scene), this.createTile(scene), this.createTile(scene)];
     }
 
     public slide(deltaX: number) {
@@ -65,28 +66,22 @@ export abstract class Block {
         this.position -= 1;
     }
 
-    protected createBlock(scene: Scene, originX: number, originY: number) {
-        this._tiles = [this.createTile(scene, originX, originY), this.createTile(scene, originX, originY), this.createTile(scene, originX, originY), this.createTile(scene, originX, originY)];
-        this.rotateRandomly();
-        this.setOrigin(originX, originY);
-    }
-
-    private createTile(scene: Scene, x: number, y: number): GameObjects.Sprite {
-        const tile = scene.add.sprite(x, y, "block");
-        tile.setOrigin(0, 0);
-        return tile;
-    }
-
-    private rotateRandomly() {
+    public rotateRandomly() {
         this.position = Math.floor(Math.random() * this.positonMatrix.length);
     }
 
-    private setOrigin(originX: number, originY: number) {
+    public setOrigin(originX: number, originY: number) {
         const deltaX = originX - Math.min(...this.tiles.map(tile => tile.x));
         const deltaY = originY - Math.min(...this.tiles.map(tile => tile.y));
         this.tiles.forEach(tile => {
             tile.x += deltaX;
             tile.y += deltaY;
         });
+    }
+
+    private createTile(scene: Scene): GameObjects.Sprite {
+        const tile = scene.add.sprite(0, 0, "block");
+        tile.setOrigin(0, 0);
+        return tile;
     }
 }

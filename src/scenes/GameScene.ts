@@ -103,70 +103,11 @@ export class GameScene extends BaseGameScene {
   private generateBlock(): Block {
     // TODO: Add preview of next block that will appear
     const blockType = this.blockTypes[Math.floor(Math.random() * this.blockTypes.length)];
-    return new blockType(this, this.startX, this.startY, this.tileSize);
-  }
-
-  private slideBlock(deltaX: number) {
-    if (!this.willCollide(deltaX) && this.currentBlock.maxx + deltaX < this.width && this.currentBlock.x + deltaX >= 0) {
-      this.currentBlock.slide(deltaX);
-    }
-  }
-
-  private descendBlock() {
-    if (this.willCollide(0, this.tileSize) || (this.currentBlock.y + this.tileSize) >= this.height) {
-      this.laidTiles.push(...this.currentBlock.tiles);
-      GameData.gamePoints += this.pointsPerBlock;
-
-      const removedLinesCount = this.checkFullLines();
-      if (removedLinesCount > 0) {
-        this.lineBreakSound.play();
-
-        const multiplier = [0, 1, 1.5, 2, 2.5];
-        GameData.gamePoints += this.pointsPerLine * removedLinesCount * multiplier[removedLinesCount];
-      } else {
-        this.tickSound.play();
-      }
-
-      if (this.laidTiles.some(tile => tile.y === 0)) {
-        this.scene.start("MenuScene", { showPoints: true });
-        // TODO: Add highscore
-      }
-      this.blockQuickDescend = false;
-      this.currentBlock = this.generateBlock();
-    } else {
-      this.currentBlock.descend(this.tileSize);
-      this.blockQuickDescend = (this.willCollide(0, this.tileSize) || (this.currentBlock.y + this.tileSize) >= this.height);
-    }
-  }
-
-  private checkFullLines(): number {
-    const tilesPerLine = this.width / this.tileSize;
-    const ys = this.laidTiles.map(tile => tile.y).filter((y, index, array) => y && array.indexOf(y) === index).sort((y1, y2) => y1 - y2);
-
-    let removedLines = 0;
-    ys.forEach((y) => {
-      const line = this.laidTiles.filter(tile => tile.y === y);
-      if (line.length === tilesPerLine) {
-        line.forEach(tile => tile.destroy());
-        // remove line
-        this.laidTiles = this.laidTiles.filter(tile => line.indexOf(tile) === -1);
-        // move rest of blocks down
-        this.laidTiles.filter(tile => tile.y < y).forEach(tile => tile.y += this.tileSize);
-        removedLines++;
-      }
-    });
-
-    return removedLines;
-  }
-
-  private willCollide(deltaX: number = 0, deltaY: number = 0): boolean {
-    return this.currentBlock.tiles.some(tile => {
-      return this.laidTiles.some(block => block.x === tile.x + deltaX && block.y === tile.y + deltaY);
-    });
+    return new blockType(this, this.tileSize);
   }
 
   private addControls() {
     this.cursors = this.input.keyboard.createCursorKeys();
-    // TODO: addd pausing game using ESC key
+    // TODO: Add pausing game using ESC key
   }
 }

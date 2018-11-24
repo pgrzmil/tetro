@@ -18,8 +18,4 @@ export class ZBlock extends Block {
         ],
     ];
 
-    constructor(scene: Phaser.Scene, originX: number, originY: number, tileSize: number) {
-        super(scene, originX, originY, tileSize);
-        this.createBlock(scene, originX, originY);
-    }
 }

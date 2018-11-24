@@ -17,9 +17,4 @@ export class IBlock extends Block {
             new PositionMatrixItem(0, this.tileSize),
         ],
     ];
-
-    constructor(scene: Phaser.Scene, originX: number, originY: number, tileSize: number) {
-        super(scene, originX, originY, tileSize);
-        this.createBlock(scene, originX, originY);
-    }
 }

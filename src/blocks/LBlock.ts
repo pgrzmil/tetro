@@ -29,9 +29,4 @@ export class LBlock extends Block {
             new PositionMatrixItem(this.tileSize, 0),
         ],
     ];
-
-    constructor(scene: Phaser.Scene, originX: number, originY: number, tileSize: number) {
-        super(scene, originX, originY, tileSize);
-        this.createBlock(scene, originX, originY);
-    }
 }
