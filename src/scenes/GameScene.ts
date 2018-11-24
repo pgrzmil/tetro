@@ -1,8 +1,9 @@
-import { Input, GameObjects, Sound } from "phaser";
+import { Input, Sound, Scenes } from "phaser";
 import { BaseGameScene } from "./BaseGameScene";
 import GameData from "../GameData";
 import { Block } from "../blocks/Block";
 import { IBlock, JBlock, LBlock, SBlock, ZBlock, TBlock, OBlock } from "../blocks";
+import { Board } from "../Board";
 
 export class GameScene extends BaseGameScene {
 
@@ -10,11 +11,6 @@ export class GameScene extends BaseGameScene {
   private tickSound: Sound.BaseSound;
   private lineBreakSound: Sound.BaseSound;
 
-  private currentBlock: Block;
-  private laidTiles: GameObjects.Sprite[];
-
-  private startX = 0;
-  private startY = 0;
   private readonly tileSize = 32;
   private readonly pointsPerBlock = 4;
   private readonly pointsPerLine = 100;
@@ -32,6 +28,8 @@ export class GameScene extends BaseGameScene {
 
   private blockQuickDescend = false;
 
+  private board: Board;
+
   constructor() {
     super({ key: "GameScene" });
   }
@@ -39,17 +37,43 @@ export class GameScene extends BaseGameScene {
   public create() {
     super.create();
 
+    GameData.gamePoints = 0;
     this.scene.launch("GameUIScene");
+    this.addControls();
+
     this.tickSound = this.sound.add("tick");
     this.lineBreakSound = this.sound.add("lineBreak", { volume: 0.2 });
 
-    this.startX = (this.width - this.tileSize) / 2;
-    this.laidTiles = [];
-    GameData.gamePoints = 0;
+    this.board = new Board(this.height, this.width - 160, this.tileSize);
+    this.board.on("BlockLaidEvent", () => {
+      GameData.gamePoints += this.pointsPerBlock;
 
-    this.addControls();
-    this.currentBlock = this.generateBlock();
-    // TODO: Change game field from taking all game area so there will be place for ui
+      this.tickSound.play();
+
+      this.blockQuickDescend = false;
+      this.board.setCurrentBlock(this.generateBlock());
+    });
+
+    this.board.on("LineBrakeEvent", (numberOfLines: number) => {
+      this.lineBreakSound.play();
+
+      const multiplier = [0, 1, 1.5, 2, 2.5];
+      GameData.gamePoints += this.pointsPerLine * numberOfLines * multiplier[numberOfLines];
+
+      this.blockQuickDescend = false;
+      this.board.setCurrentBlock(this.generateBlock());
+    });
+
+    this.board.on("BoardFullEvent", () => {
+      this.scene.remove("GameUIScene");
+      this.scene.start("MenuScene", { showPoints: true });
+      // TODO: Add highscore
+    });
+
+    this.board.on("BlockWillBeLaidEvent", () => this.blockQuickDescend = true);
+    this.board.on("BlockDescendEvent", () => this.blockQuickDescend = false);
+
+    this.board.setCurrentBlock(this.generateBlock());
     // TODO: Add button for muting backround music and sound effects
     // TODO: Add color changing on level progression
   }
@@ -62,43 +86,37 @@ export class GameScene extends BaseGameScene {
 
     if (time - this.lastDescend >= this.descendInterval) {
       this.lastDescend = time;
-      this.descendBlock();
+      this.board.descendBlock();
     }
 
     if (this.cursors.space.isDown && time - this.lastRotation >= this.rotationInterval) {
       this.lastRotation = time;
-      this.rotateBlockClockwise();
+      this.board.rotateBlockClockwise();
     }
 
     if (this.cursors.down.isDown && !this.blockQuickDescend && time - this.lastQuickDescend >= this.quickDescendInterval) {
       this.lastQuickDescend = time;
-      this.descendBlock();
+      this.board.descendBlock();
     }
 
     if (time - this.lastSlide >= this.slideInterval) {
       this.lastSlide = time;
       if (this.cursors.right.isDown) {
-        this.slideBlock(this.tileSize);
+        this.board.slideBlock(this.tileSize);
       } else if (this.cursors.left.isDown) {
-        this.slideBlock(-this.tileSize);
+        this.board.slideBlock(-this.tileSize);
       }
     }
   }
 
-  private rotateBlockClockwise() {
-    this.currentBlock.rotateClockwise();
-    if (this.willCollide() || this.currentBlock.y + this.tileSize >= this.height) {
-      this.currentBlock.rotateCounterClockwise();
-    } else {
-      if (this.currentBlock.x < 0) {
-        this.currentBlock.slide(-this.currentBlock.x);
-      } else if (this.currentBlock.maxx >= this.width) {
-        this.currentBlock.slide(-(this.currentBlock.maxx - this.width + this.tileSize));
-      }
-    }
+  protected setBackground() {
+    super.setBackground();
+
+    const graphics = this.add.graphics();
+    graphics.fillStyle(this.gameBoardColor, 1);
+    graphics.fillRect(0, 0, this.width - 160, this.height);
   }
 
-  // tslint:disable-next-line:member-ordering
   private blockTypes = [JBlock, LBlock, SBlock, ZBlock, TBlock, IBlock, OBlock];
   private generateBlock(): Block {
     // TODO: Add preview of next block that will appear
