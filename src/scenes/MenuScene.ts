@@ -17,14 +17,18 @@ export class MenuScene extends BaseGameScene {
   public create() {
     super.create();
 
-    this.add.text((this.width / 2) - 15, 30, "tetro", this.textStyle);
+    const titleLabel = this.add.text(0, 30, "tetro", this.textStyle);
+    titleLabel.x = (this.width - titleLabel.width) / 2;
 
     if (this.showPoints) {
-      this.add.text((this.width / 2) - 50, 150, "Game over", this.textStyle);
-      this.add.text((this.width / 2) - 140, 200, `You earned ${GameData.gamePoints} points`, this.textStyle);
+      const gameOverLabel = this.add.text(0, 150, "Game over", this.textStyle);
+      gameOverLabel.x = (this.width - gameOverLabel.width) / 2;
+
+      const pointsLabel = this.add.text(0, 200, `You earned ${GameData.gamePoints} points`, this.textStyle);
+      pointsLabel.x = (this.width - pointsLabel.width) / 2;
     }
 
-    const playButton = this.add.image(this.width / 2 + 32, this.height / 2, "playIcon");
+    const playButton = this.add.image(this.width / 2, this.height / 2, "playIcon");
     playButton.setInteractive();
     playButton.on("pointerdown", this.startGame, this);
 
