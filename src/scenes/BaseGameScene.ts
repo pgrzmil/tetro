@@ -3,6 +3,8 @@ import { GameObjects, Scene } from "phaser";
 export class BaseGameScene extends Scene {
 
     protected textColor = "#222222";
+    protected backgroundColor = 0xf8f8f8;
+    protected gameBoardColor = 0xeeeeee;
 
     protected get width() {
         return this.game.config.width as number;
@@ -15,9 +17,9 @@ export class BaseGameScene extends Scene {
         this.setBackground();
     }
 
-    private setBackground() {
+    protected setBackground() {
         const graphics = this.add.graphics();
-        graphics.fillStyle(0xeeeeee, 1);
+        graphics.fillStyle(this.backgroundColor, 1);
         graphics.fillRect(0, 0, this.width, this.height);
     }
 }
