@@ -2,6 +2,12 @@ import { GameObjects } from "phaser";
 import { Block } from "./blocks/Block";
 
 export class Board extends Phaser.Events.EventEmitter {
+    public static readonly lineBrakeEvent = "LineBrakeEvent";
+    public static readonly blockLaidEvent = "BlockLaidEvent";
+    public static readonly boardFullEvent = "BoardFullEvent";
+    public static readonly blockDescendEvent = "BlockDescendEvent";
+    public static readonly blockWillBeLaidEvent = "BlockWillBeLaidEvent";
+
     public height: number;
     public width: number;
 
@@ -52,17 +58,17 @@ export class Board extends Phaser.Events.EventEmitter {
             this.laidTiles.push(...this.currentBlock.tiles);
 
             const removedLinesCount = this.checkFullLines();
-            this.emit(removedLinesCount > 0 ? "LineBrakeEvent" : "BlockLaidEvent", removedLinesCount);
+            this.emit(removedLinesCount > 0 ? Board.lineBrakeEvent : Board.blockLaidEvent, removedLinesCount);
 
             if (this.laidTiles.some(tile => tile.y === 0)) {
-                this.emit("BoardFullEvent");
+                this.emit(Board.boardFullEvent);
             }
         } else {
             this.currentBlock.descend(this.tileSize);
-            this.emit("BlockDescendEvent");
+            this.emit(Board.blockDescendEvent);
 
             if (this.willCollide(0, this.tileSize) || (this.currentBlock.y + this.tileSize) >= this.height) {
-                this.emit("BlockWillBeLaidEvent");
+                this.emit(Board.blockWillBeLaidEvent);
             }
         }
     }

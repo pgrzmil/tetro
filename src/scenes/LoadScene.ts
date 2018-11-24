@@ -1,8 +1,9 @@
 import { Scene } from "phaser";
+import { MenuScene } from "./";
 
 export class LoadScene extends Scene {
   constructor() {
-    super({ key: "LoadScene" });
+    super({ key: LoadScene.name });
   }
 
   public preload() {
@@ -18,6 +19,6 @@ export class LoadScene extends Scene {
     const backgroundSound = this.sound.add("background", { volume: 0.1, loop: true });
     backgroundSound.play();
 
-    this.scene.start("MenuScene");
+    this.scene.start(MenuScene.name);
   }
 }

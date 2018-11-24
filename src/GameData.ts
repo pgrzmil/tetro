@@ -1,6 +1,7 @@
 import Game from "./Game";
 
 class GameData {
+    public readonly gamePointsChangedEvent = "GamePointsChangedEvent";
     private static instance: GameData;
 
     private constructor() { }
@@ -15,7 +16,7 @@ class GameData {
     }
     set gamePoints(val) {
         this._gamePoints = val;
-        Game.events.emit("GamePointsChangedEvent");
+        Game.events.emit(this.gamePointsChangedEvent);
     }
 }
 

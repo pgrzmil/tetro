@@ -1,9 +1,10 @@
-import { Input, Sound, Scenes } from "phaser";
+import { Input, Sound } from "phaser";
 import { BaseGameScene } from "./BaseGameScene";
 import GameData from "../GameData";
 import { Block } from "../blocks/Block";
 import { IBlock, JBlock, LBlock, SBlock, ZBlock, TBlock, OBlock } from "../blocks";
 import { Board } from "../Board";
+import { GameUIScene, MenuScene } from "./";
 
 export class GameScene extends BaseGameScene {
 
@@ -31,47 +32,26 @@ export class GameScene extends BaseGameScene {
   private board: Board;
 
   constructor() {
-    super({ key: "GameScene" });
+    super({ key: GameScene.name });
   }
 
   public create() {
     super.create();
 
     GameData.gamePoints = 0;
-    this.scene.launch("GameUIScene");
+    this.scene.launch(GameUIScene.name);
     this.addControls();
 
     this.tickSound = this.sound.add("tick");
     this.lineBreakSound = this.sound.add("lineBreak", { volume: 0.2 });
 
     this.board = new Board(this.height, this.width - 160, this.tileSize);
-    this.board.on("BlockLaidEvent", () => {
-      GameData.gamePoints += this.pointsPerBlock;
 
-      this.tickSound.play();
-
-      this.blockQuickDescend = false;
-      this.board.setCurrentBlock(this.generateBlock());
-    });
-
-    this.board.on("LineBrakeEvent", (numberOfLines: number) => {
-      this.lineBreakSound.play();
-
-      const multiplier = [0, 1, 1.5, 2, 2.5];
-      GameData.gamePoints += this.pointsPerLine * numberOfLines * multiplier[numberOfLines];
-
-      this.blockQuickDescend = false;
-      this.board.setCurrentBlock(this.generateBlock());
-    });
-
-    this.board.on("BoardFullEvent", () => {
-      this.scene.remove("GameUIScene");
-      this.scene.start("MenuScene", { showPoints: true });
-      // TODO: Add highscore
-    });
-
-    this.board.on("BlockWillBeLaidEvent", () => this.blockQuickDescend = true);
-    this.board.on("BlockDescendEvent", () => this.blockQuickDescend = false);
+    this.board.on(Board.blockLaidEvent, this.onLaidBlock);
+    this.board.on(Board.lineBrakeEvent, this.onLineBreak);
+    this.board.on(Board.boardFullEvent, this.gameOver);
+    this.board.on(Board.blockWillBeLaidEvent, () => this.blockQuickDescend = true);
+    this.board.on(Board.blockDescendEvent, () => this.blockQuickDescend = false);
 
     this.board.setCurrentBlock(this.generateBlock());
     // TODO: Add button for muting backround music and sound effects
@@ -107,6 +87,26 @@ export class GameScene extends BaseGameScene {
         this.board.slideBlock(-this.tileSize);
       }
     }
+  }
+
+  private onLineBreak(numberOfLines: number) {
+    this.lineBreakSound.play();
+    const multiplier = [0, 1, 1.5, 2, 2.5];
+    GameData.gamePoints += this.pointsPerLine * numberOfLines * multiplier[numberOfLines];
+    this.blockQuickDescend = false;
+    this.board.setCurrentBlock(this.generateBlock());
+  }
+
+  private onLaidBlock() {
+    GameData.gamePoints += this.pointsPerBlock;
+    this.tickSound.play();
+    this.blockQuickDescend = false;
+    this.board.setCurrentBlock(this.generateBlock());
+  }
+
+  private gameOver() {
+    this.scene.remove(GameUIScene.name);
+    this.scene.start(MenuScene.name, { showPoints: true });
   }
 
   protected setBackground() {

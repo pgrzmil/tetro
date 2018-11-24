@@ -1,5 +1,6 @@
 import { BaseGameScene } from "./BaseGameScene";
 import GameData from "../GameData";
+import { GameScene } from "./";
 
 export class MenuScene extends BaseGameScene {
 
@@ -7,7 +8,7 @@ export class MenuScene extends BaseGameScene {
   private showPoints = false;
 
   constructor() {
-    super({ key: "MenuScene" });
+    super({ key: MenuScene.name });
   }
 
   public init(data: any) {
@@ -38,6 +39,6 @@ export class MenuScene extends BaseGameScene {
 
   private startGame() {
     this.sound.play("click", { volume: 0.1 });
-    this.scene.start("GameScene");
+    this.scene.start(GameScene.name);
   }
 }
