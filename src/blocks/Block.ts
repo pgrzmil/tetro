@@ -12,6 +12,9 @@ export abstract class Block {
     protected positonMatrix: PositionMatrixItem[][];
 
     private _position: number = 0;
+    private get position(): number {
+        return this._position;
+    }
     private set position(val: number) {
         // Set position accordingly to postion matrix. Shifting to possible indexes when necessarry
         // i.e when rotationg counter clockwise and value will be less than 0 set last of positions from positionMatrix.

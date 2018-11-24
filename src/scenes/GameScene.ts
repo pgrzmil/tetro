@@ -24,6 +24,7 @@ export class GameScene extends BaseGameScene {
   private lastDescend: number = 0;
   private lastQuickDescend: number = 0;
 
+  // TODO: Add speed progression
   private descendInterval = 750;
   private quickDescendInterval = 25;
   private rotationInterval = 150;
@@ -48,8 +49,9 @@ export class GameScene extends BaseGameScene {
 
     this.addControls();
     this.currentBlock = this.generateBlock();
-
+    // TODO: Change game field from taking all game area so there will be place for ui
     // TODO: Add button for muting backround music and sound effects
+    // TODO: Add color changing on level progression
   }
 
   public update(time: number, delta: number) {
