@@ -13,7 +13,7 @@ export class GameUIScene extends BaseGameScene {
         const style = { color: this.textColor, align: "left", fontSize: 20 };
         this.resourcesControl = this.add.text(2, 2, "", style);
         this.displayPoints();
-        this.game.events.addListener("gamePointsEvent", this.displayPoints, this);
+        this.game.events.addListener("GamePointsChangedEvent", this.displayPoints, this);
     }
 
     public displayPoints() {
