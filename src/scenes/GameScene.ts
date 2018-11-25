@@ -54,6 +54,8 @@ export class GameScene extends BaseGameScene {
     this.board.on(Board.blockDescendEvent, () => this.blockQuickDescend = false, this);
 
     this.board.setCurrentBlock(this.generateBlock());
+
+    GameData.startTime = new Date();
     // TODO: Add button for muting backround music and sound effects
     // TODO: Add color changing on level progression
   }

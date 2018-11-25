@@ -17,7 +17,7 @@ class Game extends Phaser.Game {
       pixelArt: false,
       scene: [LoadScene, MenuScene, GameScene, GameUIScene],
       type: 0,
-      width: 480,
+      width: 500,
       zoom: 1,
     };
 
