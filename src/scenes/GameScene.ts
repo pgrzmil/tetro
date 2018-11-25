@@ -47,11 +47,11 @@ export class GameScene extends BaseGameScene {
 
     this.board = new Board(this.height, this.tileSize * GameData.boardWidthTileMultiplier, this.tileSize);
 
-    this.board.on(Board.blockLaidEvent, this.onLaidBlock);
-    this.board.on(Board.lineBrakeEvent, this.onLineBreak);
-    this.board.on(Board.boardFullEvent, this.gameOver);
-    this.board.on(Board.blockWillBeLaidEvent, () => this.blockQuickDescend = true);
-    this.board.on(Board.blockDescendEvent, () => this.blockQuickDescend = false);
+    this.board.on(Board.blockLaidEvent, this.onLaidBlock, this);
+    this.board.on(Board.lineBrakeEvent, this.onLineBreak, this);
+    this.board.on(Board.boardFullEvent, this.gameOver, this);
+    this.board.on(Board.blockWillBeLaidEvent, () => this.blockQuickDescend = true, this);
+    this.board.on(Board.blockDescendEvent, () => this.blockQuickDescend = false, this);
 
     this.board.setCurrentBlock(this.generateBlock());
     // TODO: Add button for muting backround music and sound effects
