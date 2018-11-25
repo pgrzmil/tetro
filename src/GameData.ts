@@ -10,6 +10,9 @@ class GameData {
         return this.instance || (this.instance = new this());
     }
 
+    public readonly tileSize = 32;
+    public readonly boardWidthTileMultiplier = 10;
+
     private _gamePoints: number = 0;
     get gamePoints() {
         return this._gamePoints;

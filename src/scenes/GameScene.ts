@@ -12,7 +12,7 @@ export class GameScene extends BaseGameScene {
   private tickSound: Sound.BaseSound;
   private lineBreakSound: Sound.BaseSound;
 
-  private readonly tileSize = 32;
+  private readonly tileSize = GameData.tileSize;
   private readonly pointsPerBlock = 4;
   private readonly pointsPerLine = 100;
 
@@ -45,7 +45,7 @@ export class GameScene extends BaseGameScene {
     this.tickSound = this.sound.add("tick");
     this.lineBreakSound = this.sound.add("lineBreak", { volume: 0.2 });
 
-    this.board = new Board(this.height, this.width - 160, this.tileSize);
+    this.board = new Board(this.height, this.tileSize * GameData.boardWidthTileMultiplier, this.tileSize);
 
     this.board.on(Board.blockLaidEvent, this.onLaidBlock);
     this.board.on(Board.lineBrakeEvent, this.onLineBreak);
@@ -114,7 +114,7 @@ export class GameScene extends BaseGameScene {
 
     const graphics = this.add.graphics();
     graphics.fillStyle(this.gameBoardColor, 1);
-    graphics.fillRect(0, 0, this.width - 160, this.height);
+    graphics.fillRect(0, 0, this.board.width, this.height);
   }
 
   private blockTypes = [JBlock, LBlock, SBlock, ZBlock, TBlock, IBlock, OBlock];

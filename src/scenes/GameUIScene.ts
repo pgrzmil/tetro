@@ -3,7 +3,7 @@ import GameData from "../GameData";
 import { BaseGameScene } from "./BaseGameScene";
 
 export class GameUIScene extends BaseGameScene {
-    public resourcesControl: GameObjects.Text;
+    public pointsLabel: GameObjects.Text;
 
     constructor() {
         super({ key: GameUIScene.name });
@@ -11,12 +11,13 @@ export class GameUIScene extends BaseGameScene {
 
     public create() {
         const style = { color: this.textColor, align: "left", fontSize: 20, lineSpacing: 10 };
-        this.resourcesControl = this.add.text(this.width - 160 + 5, 2, "", style);
+        const uiWidth = (GameData.tileSize * 10) + 5;
+        this.pointsLabel = this.add.text(uiWidth, 2, "", style);
         this.displayPoints();
         this.game.events.addListener(GameData.gamePointsChangedEvent, this.displayPoints, this);
     }
 
     public displayPoints() {
-        this.resourcesControl.text = `POINTS\n${GameData.gamePoints}`;
+        this.pointsLabel.text = `POINTS\n${GameData.gamePoints}`;
     }
 }
