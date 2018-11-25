@@ -21,7 +21,6 @@ export class GameScene extends BaseGameScene {
   private lastDescend: number = 0;
   private lastQuickDescend: number = 0;
 
-  // TODO: Add speed progression
   private descendInterval = 750;
   private quickDescendInterval = 25;
   private rotationInterval = 150;
@@ -101,6 +100,7 @@ export class GameScene extends BaseGameScene {
 
   private onLaidBlock() {
     GameData.gamePoints += this.pointsPerBlock;
+    this.descendInterval -= 1;
     this.tickSound.play();
     this.blockQuickDescend = false;
     this.board.setCurrentBlock(this.generateBlock());
@@ -116,7 +116,7 @@ export class GameScene extends BaseGameScene {
 
     const graphics = this.add.graphics();
     graphics.fillStyle(this.gameBoardColor, 1);
-    graphics.fillRect(0, 0, this.board.width, this.height);
+    graphics.fillRect(0, 0, this.tileSize * GameData.boardWidthTileMultiplier, this.height);
   }
 
   private blockTypes = [JBlock, LBlock, SBlock, ZBlock, TBlock, IBlock, OBlock];
